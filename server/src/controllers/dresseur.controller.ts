@@ -72,12 +72,7 @@ class DresseurController {
 
   async removeFromPokedex(req: Request, res: Response) {
     const { id } = req.params
-    const { pokemonId } = req.body
-
-    if (!pokemonId) {
-      res.status(400).json({ error: 'Le pokemonId est requis' })
-      return
-    }
+    const pokemonId = req.params.pokemonId
 
     const dresseur = await Dresseur.findByIdAndUpdate(
       id,

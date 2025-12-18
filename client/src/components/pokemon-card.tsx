@@ -26,6 +26,11 @@ export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => 
     toast.success('Pokémon ajouté au pokedex')
   }
 
+  const supprimer = async () => {
+    await apiClient.delete(`/api/dresseur/${user?._id}/pokedex/remove/${pokemon.id}`)
+    toast.success('Pokémon supprimé du pokedex')
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -40,7 +45,7 @@ export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => 
           <CardContent className='mx-auto'>
             <img src={pokemon.image} alt={pokemon.name} width={96} height={96} />
           </CardContent>
-          <CardFooter className='flex justify-between items-center'>
+          <CardFooter className='flex flex-col gap-1'>
             <Button
               onClick={(e) => {
                 e.stopPropagation()
@@ -48,6 +53,15 @@ export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => 
               }}
             >
               Ajouter au pokedex
+            </Button>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation()
+                supprimer()
+              }}
+              variant='destructive'
+            >
+              Supprimer du pokedex
             </Button>
           </CardFooter>
         </Card>
