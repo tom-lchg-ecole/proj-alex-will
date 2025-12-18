@@ -20,7 +20,7 @@ export const authService = {
    */
   async getCurrentUser(): Promise<IUser> {
     try {
-      const response = (await apiClient.get('/auth/profile')) as GetCurrentUserResponse
+      const response = (await apiClient.get('/api/auth/profile')) as GetCurrentUserResponse
 
       if (!response.data) {
         throw new Error('Aucune donnée utilisateur retournée')

@@ -2,16 +2,16 @@ import 'dotenv/config'
 import { Request, Response } from 'express'
 import { app, PORT } from './config/server'
 import { authRoute } from './routes/auth.route'
+import { dresseurRoutes } from './routes/dresseur.routes'
+import { equipeRoutes } from './routes/equipe.routes'
 import { pokemonRoutes } from './routes/pokemon.routes'
 import { connectDB } from './utils/mongodb'
-import { equipeRoutes } from './routes/equipe.routes'
-import { dresseurRoutes } from './routes/dresseur.routes'
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Serveur Express avec TypeScript fonctionne !' })
 })
 
-app.use('/auth', authRoute)
+app.use('/api/auth', authRoute)
 app.use('/api', pokemonRoutes)
 app.use('/api/equipe', equipeRoutes)
 app.use('/api/dresseur', dresseurRoutes)

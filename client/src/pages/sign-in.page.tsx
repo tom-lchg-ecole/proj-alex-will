@@ -42,7 +42,7 @@ export const SignInPage: FC = (): JSX.Element => {
 
   async function onSubmit(values: SignInFormValues) {
     try {
-      const response = await apiClient.post('/auth/sign-in', values)
+      const response = await apiClient.post('/api/auth/sign-in', values)
       localStorage.setItem('token', response.data.token)
 
       // Déclencher un événement pour mettre à jour la navbar

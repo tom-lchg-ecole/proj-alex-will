@@ -45,11 +45,10 @@ export const SignUpPage: FC = (): JSX.Element => {
 
   const navigate = useNavigate()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit(values: SignUpFormValues) {
     try {
       // Appel à l'API pour l'inscription
-      await apiClient.post('/auth/sign-up', values)
+      await apiClient.post('/api/auth/sign-up', values)
       // TODO: Rediriger vers la page de connexion ou le profil
       navigate('/sign-in')
     } catch (error) {
