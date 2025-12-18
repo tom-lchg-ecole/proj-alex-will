@@ -4,7 +4,7 @@ export interface IDresseur extends Document {
   username: string
   email: string
   password: string
-  pokedex: string[]
+  pokedex: []
   createdAt: Date
 }
 
@@ -24,7 +24,7 @@ const DresseurSchema: Schema = new Schema(
       required: true
     },
     pokedex: {
-      type: [String],
+      type: [],
       default:[]
     }
 
