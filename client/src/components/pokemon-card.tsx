@@ -1,5 +1,8 @@
+import { apiClient } from '@/services/api-client'
 import type { IPokemon } from '@/types/pokemon.type'
 import type { FC, JSX } from 'react'
+import { toast } from 'sonner'
+import { Button } from './ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
 import {
   Dialog,
@@ -9,44 +12,41 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog'
-import { Button } from './ui/button'
-import { apiClient } from '@/services/api-client'
 
 interface IPokemonCardProps {
   pokemon: IPokemon
 }
 
 export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => {
-  // push to /pokemon/:name au click
+  const ajouter = async () => {
+    await apiClient.post('/api/dresseur/694427839e364a80bab760c4/pokedex/add', pokemon)
+    toast.success('Pokémon ajouté au pokedex')
+  }
 
-const ajouter = async () => {
-  const response = await apiClient.post('/api/dresseur/69440d02b8b5e71344daaa3e/pokedex/add', pokemon)
-  console.log(response)
-  console.log(pokemon)
-}
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Card className='cursor-pointer hover:bg-accent/50 transition-colors duration-100'>
           <CardHeader>
-            <CardTitle>{pokemon.name}</CardTitle><p>#{pokemon.id}</p>
+            <CardTitle>{pokemon.name}</CardTitle>
+            <p>#{pokemon.id}</p>
             <CardDescription>
               <p>{pokemon.types.join(', ')}</p>
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className='mx-auto'>
             <img src={pokemon.image} alt={pokemon.name} width={96} height={96} />
           </CardContent>
           <CardFooter className='flex justify-between items-center'>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation()
-              ajouter()
-            }}
-          >
-            ajouter
-          </Button>
-        </CardFooter>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation()
+                ajouter()
+              }}
+            >
+              Ajouter au pokedex
+            </Button>
+          </CardFooter>
         </Card>
       </DialogTrigger>
       <DialogContent>

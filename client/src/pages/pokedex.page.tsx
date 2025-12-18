@@ -1,8 +1,22 @@
 import { PokemonCard } from '@/components/pokemon-card'
 import { Input } from '@/components/ui/input'
-import type { FC, JSX } from 'react'
+import { apiClient } from '@/services/api-client'
+import type { IPokemon } from '@/types/pokemon.type'
+import { useEffect, useState, type FC, type JSX } from 'react'
 
 export const PokedexPage: FC = (): JSX.Element => {
+  const [pokedex, setPokedex] = useState<IPokemon[]>([])
+
+  useEffect(() => {
+    const loadPokedex = async () => {
+      const { pokedex } = await apiClient.get('/api/dresseur/694427839e364a80bab760c4/pokedex')
+      setPokedex(pokedex)
+    }
+    loadPokedex()
+  }, [])
+
+  console.log(pokedex)
+
   return (
     <section className='space-y-12'>
       <article className='space-y-2'>
@@ -19,33 +33,9 @@ export const PokedexPage: FC = (): JSX.Element => {
       </article>
 
       <article className='flex flex-wrap gap-4'>
-        <PokemonCard
-          pokemon={{
-            id: '1',
-            name: 'Bulbizarre',
-            image:
-              'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-            types: ['Plante', 'Poison'],
-          }}
-        />
-        <PokemonCard
-          pokemon={{
-            id: '1',
-            name: 'Bulbizarre',
-            image:
-              'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-            types: ['Plante', 'Poison'],
-          }}
-        />
-        <PokemonCard
-          pokemon={{
-            id: '1',
-            name: 'Bulbizarre',
-            image:
-              'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-            types: ['Plante', 'Poison'],
-          }}
-        />
+        {pokedex.map((pokemon) => (
+          <PokemonCard key={pokemon.id} pokemon={pokemon} />
+        ))}
       </article>
     </section>
   )
