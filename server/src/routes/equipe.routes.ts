@@ -1,13 +1,14 @@
 import { Router } from 'express'
 import equipeController from '../controllers/equipe.controller'
+import { authMiddleware } from '../middlewares/auth.middleware'
 
 export const equipeRoutes = Router()
 
 
 equipeRoutes
-    .post('/', equipeController.create)
+    .post('/', authMiddleware, equipeController.create)
     .get('/', equipeController.getAll)
     .get('/:id', equipeController.getById)
     .get('/dresseur/:dresseurId', equipeController.getByDresseur)
-    .put('/:id', equipeController.update)
-    .delete('/:id', equipeController.delete)
+    .put('/:id', authMiddleware, equipeController.update)
+    .delete('/:id', authMiddleware, equipeController.delete)
