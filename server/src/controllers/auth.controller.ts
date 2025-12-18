@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt'
 import { Dresseur, IDresseur } from '../models/dresseur.model'
 
 class AuthController {
@@ -10,8 +11,14 @@ class AuthController {
         throw new Error('Un dresseur avec cette email existe déjà')
       }
 
-      // Créer le nouveau dresseur
-      const newDresseur = await Dresseur.create(data)
+      // Hasher le mot de passe avant de créer le dresseur
+      const hashedPassword = await bcrypt.hash(data.password, 10)
+
+      // Créer le nouveau dresseur avec le mot de passe hashé
+      const newDresseur = await Dresseur.create({
+        ...data, // spread operator pour copier les propriétés de l'objet data et ajouté le password
+        password: hashedPassword,
+      })
       return newDresseur
     } catch (error: any) {
       throw new Error(error.message)
