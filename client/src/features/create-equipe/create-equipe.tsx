@@ -26,20 +26,24 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useGetCurrentUser } from '@/hooks/use-get-current-user'
 import { getPokemons } from '@/hooks/use-get-pokemons'
 import { cn } from '@/lib/utils'
+import { apiClient } from '@/services/api-client'
 import type { IPokemon } from '@/types/pokemon.type'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import type { FC, JSX } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { createEquipeSchema, type CreateEquipeFormValues } from './create-equipe.schema'
 
 export const CreateEquipe: FC = (): JSX.Element => {
   const [open, setOpen] = useState(false)
   const [pokemons, setPokemons] = useState<IPokemon[]>([])
   const commandListRef = useRef<HTMLDivElement>(null)
+  const { user } = useGetCurrentUser()
 
   const form = useForm<CreateEquipeFormValues>({
     resolver: zodResolver(createEquipeSchema),
@@ -63,13 +67,15 @@ export const CreateEquipe: FC = (): JSX.Element => {
     loadPokemons()
   }, [])
 
-  function onSubmit(values: CreateEquipeFormValues) {
+  async function onSubmit(values: CreateEquipeFormValues) {
     const selectedPokemons = pokemons.filter((pokemon) => values.pokemons.includes(pokemon.id))
     const equipeData = {
       name: values.name,
       pokemons: selectedPokemons,
     }
-    console.log(equipeData)
+
+    await apiClient.post(`/api/equipe`, { ...equipeData, dresseurId: user?._id })
+    toast.success('Équipe créée avec succès')
   }
 
   return (

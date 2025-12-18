@@ -1,6 +1,8 @@
+import { apiClient } from '@/services/api-client'
 import type { IEquipe } from '@/types/equipe.type'
 import { Pencil, Settings2, Trash2 } from 'lucide-react'
 import type { FC, JSX } from 'react'
+import { toast } from 'sonner'
 import { PokemonCard } from './pokemon-card'
 import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
@@ -18,6 +20,11 @@ interface IEquipeCardProps {
 }
 
 export const EquipeCard: FC<IEquipeCardProps> = ({ equipe }): JSX.Element => {
+  const handleDelete = async () => {
+    await apiClient.delete(`/api/equipe/${equipe._id}`)
+    toast.success('Équipe supprimée avec succès')
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -35,7 +42,7 @@ export const EquipeCard: FC<IEquipeCardProps> = ({ equipe }): JSX.Element => {
               <DropdownMenuItem>
                 <Pencil /> <span>Renommer</span>
               </DropdownMenuItem>
-              <DropdownMenuItem variant='destructive'>
+              <DropdownMenuItem variant='destructive' onClick={handleDelete}>
                 <Trash2 /> <span>Supprimer</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -44,26 +51,10 @@ export const EquipeCard: FC<IEquipeCardProps> = ({ equipe }): JSX.Element => {
       </CardHeader>
 
       <CardContent>
-        <div className='flex flex-wrap gap-4'>
-          {/* TODO: Utiliser .map */}
-          <PokemonCard
-            pokemon={{
-              id: '1',
-              name: 'Bulbizarre',
-              image:
-                'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-              types: ['Plante', 'Poison'],
-            }}
-          />
-          <PokemonCard
-            pokemon={{
-              id: '1',
-              name: 'Bulbizarre',
-              image:
-                'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-              types: ['Plante', 'Poison'],
-            }}
-          />
+        <div className='grid grid-cols-3 gap-2'>
+          {equipe.pokemons.map((pokemon) => (
+            <PokemonCard key={pokemon.id} pokemon={pokemon} />
+          ))}
         </div>
       </CardContent>
     </Card>

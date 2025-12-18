@@ -1,11 +1,22 @@
 import { EquipeCard } from '@/components/equipe-card'
 import { CreateEquipe } from '@/features/create-equipe/create-equipe'
 import { useGetCurrentUser } from '@/hooks/use-get-current-user'
-import type { FC, JSX } from 'react'
+import { apiClient } from '@/services/api-client'
+import type { IEquipe } from '@/types/equipe.type'
+import { useEffect, useState, type FC, type JSX } from 'react'
 
 export const ProfilPage: FC = (): JSX.Element => {
   // récupérer les informations de l'utilisateur
   const { user, isLoading } = useGetCurrentUser()
+  const [equipes, setEquipes] = useState<IEquipe[]>([])
+
+  useEffect(() => {
+    const loadEquipes = async () => {
+      const { equipes } = await apiClient.get(`/api/equipe/dresseur/${user?._id}`)
+      setEquipes(equipes)
+    }
+    loadEquipes()
+  }, [user?._id])
 
   if (isLoading) return <div>Chargement...</div>
 
@@ -31,14 +42,9 @@ export const ProfilPage: FC = (): JSX.Element => {
           {/* FEATURE: Créer une équipe */}
         </div>
 
-        {/* TODO: Utiliser .map */}
-        <EquipeCard
-          equipe={{
-            id: '1',
-            name: 'Équipe 1',
-            pokemons: [],
-          }}
-        />
+        {equipes.map((equipe) => (
+          <EquipeCard key={equipe._id} equipe={equipe} />
+        ))}
       </article>
     </section>
   )
