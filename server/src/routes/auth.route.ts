@@ -29,7 +29,7 @@ authRoute
       res.status(500).json({ message: error.message })
     }
   })
-  .get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
+  .get('/profile', authMiddleware, async (req: AuthRequest, res: Response) => {
     try {
       // req.user est défini par le middleware authMiddleware
       if (!req.user) {
