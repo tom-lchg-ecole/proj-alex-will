@@ -1,3 +1,4 @@
+import { useGetCurrentUser } from '@/hooks/use-get-current-user'
 import { apiClient } from '@/services/api-client'
 import type { IPokemon } from '@/types/pokemon.type'
 import type { FC, JSX } from 'react'
@@ -18,8 +19,10 @@ interface IPokemonCardProps {
 }
 
 export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => {
+  const { user } = useGetCurrentUser()
+
   const ajouter = async () => {
-    await apiClient.post('/api/dresseur/694427839e364a80bab760c4/pokedex/add', pokemon)
+    await apiClient.post(`/api/dresseur/${user?._id}/pokedex/add`, pokemon)
     toast.success('Pokémon ajouté au pokedex')
   }
 

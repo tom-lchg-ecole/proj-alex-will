@@ -1,19 +1,21 @@
 import { PokemonCard } from '@/components/pokemon-card'
 import { Input } from '@/components/ui/input'
+import { useGetCurrentUser } from '@/hooks/use-get-current-user'
 import { apiClient } from '@/services/api-client'
 import type { IPokemon } from '@/types/pokemon.type'
 import { useEffect, useState, type FC, type JSX } from 'react'
 
 export const PokedexPage: FC = (): JSX.Element => {
   const [pokedex, setPokedex] = useState<IPokemon[]>([])
+  const { user } = useGetCurrentUser()
 
   useEffect(() => {
     const loadPokedex = async () => {
-      const { pokedex } = await apiClient.get('/api/dresseur/694427839e364a80bab760c4/pokedex')
+      const { pokedex } = await apiClient.get(`/api/dresseur/${user?._id}/pokedex`)
       setPokedex(pokedex)
     }
     loadPokedex()
-  }, [])
+  }, [user?._id])
 
   console.log(pokedex)
 
