@@ -2,13 +2,10 @@ import 'dotenv/config'
 import { Request, Response } from 'express'
 import { app, PORT } from './config/server'
 import { connectDB } from './utils/mongodb'
-import { dresseurRoutes } from './routes/dresseur.routes'
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Serveur Express avec TypeScript fonctionne !' })
 })
-
-app.use('/api/dresseurs', dresseurRoutes)
 
 const startServer = async () => {
   try {
