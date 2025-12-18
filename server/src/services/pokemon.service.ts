@@ -1,10 +1,10 @@
 const POKE_API_BASE_URL = 'https://pokeapi.co/api/v2'
 
 export interface Pokemon {
-  id: number
-  name: string
-  img: string
-  types: string[]
+  id: number;
+  name: string;
+  image: string;
+  types: string[];
 }
 
 class PokemonService {
@@ -33,11 +33,11 @@ class PokemonService {
     const data = await this.fetchFromApi<any>(url)
 
     return {
-      id: data.id,
-      name: data.name,
-      img: data.sprites.other['Img'].front_default,
-      types: data.types.map((t: any) => t.type.name),
-    }
+        id: data.id,
+        name: data.name,
+        image: data.sprites.other['official-artwork'].front_default,
+        types: data.types.map((t: any) => t.type.name),
+    };
   }
 }
 
