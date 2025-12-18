@@ -11,9 +11,14 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Serveur Express avec TypeScript fonctionne !' })
 })
 
-app.use('/api', pokemonRoutes);
+app.use('/api', pokemonRoutes)
 
 app.listen(PORT, async () => {
-  await connectDB()
-  console.log(`🚀 Serveur démarré sur le port ${PORT}`)
+  try {
+    await connectDB()
+    console.log('✅ Connexion à la base de données réussie')
+    console.log(`🚀 Serveur démarré sur le port ${PORT}`)
+  } catch (error) {
+    console.error('❌ Échec de connexion à la base de données:', error)
+  }
 })
