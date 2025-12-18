@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IEquipe extends Document {
-  name: String
+  name: string
   pokemons: []
-  dresseurId: String
+  dresseurId: string
   createdAt: Date
 }
 
@@ -14,7 +14,7 @@ const EquipeSchema: Schema = new Schema(
       required: true,
     },
     pokemons: {
-      type: [String],
+      type: [],
       required: true
     },
     dresseurId: {

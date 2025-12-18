@@ -1,5 +1,3 @@
-const POKE_API_BASE_URL = 'https://pokeapi.co/api/v2'
-
 export interface Pokemon {
   id: number;
   name: string;
@@ -20,8 +18,8 @@ class PokemonService {
   /* Récupérer plusieurs Pokémon en format personnalisé */
   async getAll(limit = 151, offset = 0): Promise<Pokemon[]> {
     const listData = await this.fetchFromApi<{ results: { name: string }[] }>(
-      `${POKE_API_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`
-    )
+      `${process.env.POKE_API_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`
+    );
 
     const promises = listData.results.map((p) => this.getById(p.name))
     return Promise.all(promises)
@@ -29,8 +27,8 @@ class PokemonService {
 
   /* Récupérer un Pokémon par ID*/
   async getById(id: number | string): Promise<Pokemon> {
-    const url = `${POKE_API_BASE_URL}/pokemon/${id}`
-    const data = await this.fetchFromApi<any>(url)
+    const url = `${process.env.POKE_API_BASE_URL}/pokemon/${id}`;
+    const data = await this.fetchFromApi<any>(url);
 
     return {
         id: data.id,
