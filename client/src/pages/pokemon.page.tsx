@@ -1,8 +1,8 @@
 import { PokemonCard } from '@/components/pokemon-card'
 import { Input } from '@/components/ui/input'
+import { getPokemons } from '@/hooks/use-get-pokemons.ts'
 import type { FC, JSX } from 'react'
 import { useEffect, useState } from 'react'
-import { apiClient } from '../services/api-client.ts'
 import type { IPokemon } from '../types/pokemon.type.ts'
 
 export const PokemonsPage: FC = (): JSX.Element => {
@@ -10,18 +10,17 @@ export const PokemonsPage: FC = (): JSX.Element => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function load() {
+    const loadPokemons = async () => {
       try {
-        const data: IPokemon[] = await apiClient.get('/api/pokemons')
+        const data = await getPokemons()
         setPokemons(data)
-      } catch (e) {
-        console.error(e)
+      } catch (error) {
+        console.error('Erreur lors du chargement des pokémons:', error)
       } finally {
         setLoading(false)
       }
     }
-
-    load()
+    loadPokemons()
   }, [])
 
   return (
