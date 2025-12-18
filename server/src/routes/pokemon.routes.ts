@@ -1,9 +1,7 @@
 import { Router } from 'express';
 import pokemonController from '../controller/pokemon.controller';
 
-const router = Router();
+export const pokemonRoutes = Router();
 
-router.get('/pokemons', pokemonController.getAll);
-router.get('/pokemons/:id', pokemonController.getById);
-
-export default router;
+pokemonRoutes.get('/pokemons', pokemonController.getAll)
+.get('/pokemons/:id', pokemonController.getById);

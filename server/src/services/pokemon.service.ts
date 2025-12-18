@@ -1,13 +1,10 @@
 const POKE_API_BASE_URL = 'https://pokeapi.co/api/v2';
 
-export interface PokemonListResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: {
-    name: string;
-    url: string;
-  }[];
+export interface Pokemon {
+  id: number;
+  name: string;
+  img: string;
+  types: string[];
 }
 
 class PokemonService {
@@ -20,16 +17,27 @@ class PokemonService {
     return response.json() as Promise<T>;
   }
 
-  /* Récupérer la liste des Pokémon*/
-  async getAll(limit = 151, offset = 0): Promise<PokemonListResponse> {
-    const url = `${POKE_API_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`;
-    return this.fetchFromApi<PokemonListResponse>(url);
+  /* Récupérer plusieurs Pokémon en format personnalisé */
+  async getAll(limit = 151, offset = 0): Promise<Pokemon[]> {
+    const listData = await this.fetchFromApi<{ results: { name: string }[] }>(
+      `${POKE_API_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`
+    );
+
+    const promises = listData.results.map((p) => this.getById(p.name));
+    return Promise.all(promises);
   }
 
   /* Récupérer un Pokémon par ID*/
-  async getById(id: number | string) {
+  async getById(id: number | string): Promise<Pokemon> {
     const url = `${POKE_API_BASE_URL}/pokemon/${id}`;
-    return this.fetchFromApi(url);
+    const data = await this.fetchFromApi<any>(url);
+
+    return {
+        id: data.id,
+        name: data.name,
+        img: data.sprites.other['Img'].front_default,
+        types: data.types.map((t: any) => t.type.name),
+    };
   }
 }
 
