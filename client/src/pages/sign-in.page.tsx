@@ -8,9 +8,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { apiClient } from '@/services/api-client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { FC, JSX } from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 // Schéma de validation pour le formulaire de connexion
@@ -28,6 +31,7 @@ const signInSchema = z.object({
 type SignInFormValues = z.infer<typeof signInSchema>
 
 export const SignInPage: FC = (): JSX.Element => {
+  const navigate = useNavigate()
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -38,11 +42,15 @@ export const SignInPage: FC = (): JSX.Element => {
 
   async function onSubmit(values: SignInFormValues) {
     try {
-      // Appel à l'API pour la connexion
-      // TODO: Rediriger vers la page d'accueil ou le profil
-    } catch (error) {
-      console.error('Erreur lors de la connexion:', error)
-      // TODO: Afficher un message d'erreur à l'utilisateur
+      const response = await apiClient.post('/auth/sign-in', values)
+      localStorage.setItem('token', response.data.token)
+
+      // Déclencher un événement pour mettre à jour la navbar
+      window.dispatchEvent(new Event('storage'))
+      navigate('/')
+      toast.success('Connexion réussie')
+    } catch {
+      toast.error('Erreur lors de la connexion')
     }
   }
 
