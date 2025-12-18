@@ -10,7 +10,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { apiClient } from '@/services/api-client'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { use, type FC, type JSX } from 'react'
+import { type FC, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
@@ -42,18 +42,16 @@ export const SignUpPage: FC = (): JSX.Element => {
       password: '',
     },
   })
+
   const navigate = useNavigate()
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit(values: SignUpFormValues) {
     try {
       // Appel à l'API pour l'inscription
-     const response = await apiClient.post('/auth/sign-up', values)
-
-     console.log(response)
-
+      await apiClient.post('/auth/sign-up', values)
       // TODO: Rediriger vers la page de connexion ou le profil
       navigate('/sign-in')
-      
     } catch (error) {
       console.error("Erreur lors de l'inscription:", error)
       // TODO: Afficher un message d'erreur à l'utilisateur
