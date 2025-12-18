@@ -1,9 +1,13 @@
 import { EquipeCard } from '@/components/equipe-card'
 import { CreateEquipe } from '@/features/create-equipe/create-equipe'
+import { useGetCurrentUser } from '@/hooks/use-get-current-user'
 import type { FC, JSX } from 'react'
 
 export const ProfilPage: FC = (): JSX.Element => {
   // récupérer les informations de l'utilisateur
+  const { user, isLoading } = useGetCurrentUser()
+
+  if (isLoading) return <div>Chargement...</div>
 
   return (
     <section className='space-y-12 max-w-2xl mx-auto'>
@@ -14,9 +18,8 @@ export const ProfilPage: FC = (): JSX.Element => {
       <article>
         <h2 className='text-2xl font-bold'>Mes informations</h2>
         <div className='space-y-2 mt-4'>
-          <p>Nom d'utilisateur</p>
-          <p>Email</p>
-          <p>Mot de passe</p>
+          <p>Nom d'utilisateur: {user?.username}</p>
+          <p>Email: {user?.email}</p>
         </div>
       </article>
 
