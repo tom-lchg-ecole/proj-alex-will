@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Equipe, IEquipe } from '../models/Equipe'
+import { Equipe, IEquipe } from '../models/equipe.model'
 
 
 class EquipeController {

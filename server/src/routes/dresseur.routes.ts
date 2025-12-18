@@ -8,4 +8,6 @@ dresseurRoutes
     .get('/', dresseurController.getAll)
     .get('/:id', dresseurController.getById)
     .put('/:id', dresseurController.updatePokedex)
+    .post('/:id/pokedex/add', dresseurController.addInPokedex)
+    .post('/:id/pokedex/remove', dresseurController.removeFromPokedex)
     .delete('/:id', dresseurController.delete)

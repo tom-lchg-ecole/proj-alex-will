@@ -1,4 +1,5 @@
 import { EquipeCard } from '@/components/equipe-card'
+import { CreateEquipe } from '@/features/create-equipe/create-equipe'
 import type { FC, JSX } from 'react'
 
 export const ProfilPage: FC = (): JSX.Element => {
@@ -20,7 +21,12 @@ export const ProfilPage: FC = (): JSX.Element => {
       </article>
 
       <article className='space-y-4'>
-        <h2 className='text-2xl font-bold'>Mes Équipes</h2>
+        <div className='flex justify-between items-center'>
+          <h2 className='text-2xl font-bold'>Mes Équipes</h2>
+          {/* FEATURE: Créer une équipe */}
+          <CreateEquipe />
+          {/* FEATURE: Créer une équipe */}
+        </div>
 
         {/* TODO: Utiliser .map */}
         <EquipeCard

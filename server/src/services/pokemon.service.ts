@@ -1,18 +1,18 @@
 export interface Pokemon {
   id: number;
   name: string;
-  img: string;
+  image: string;
   types: string[];
 }
 
 class PokemonService {
   private async fetchFromApi<T>(url: string): Promise<T> {
-    const response = await fetch(url);
+    const response = await fetch(url)
 
     if (!response.ok) {
-      throw new Error(`PokeAPI error: ${response.status}`);
+      throw new Error(`PokeAPI error: ${response.status}`)
     }
-    return response.json() as Promise<T>;
+    return response.json() as Promise<T>
   }
 
   /* Récupérer plusieurs Pokémon en format personnalisé */
@@ -21,8 +21,8 @@ class PokemonService {
       `${process.env.POKE_API_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`
     );
 
-    const promises = listData.results.map((p) => this.getById(p.name));
-    return Promise.all(promises);
+    const promises = listData.results.map((p) => this.getById(p.name))
+    return Promise.all(promises)
   }
 
   /* Récupérer un Pokémon par ID*/
@@ -33,10 +33,10 @@ class PokemonService {
     return {
         id: data.id,
         name: data.name,
-        img: data.sprites.other['Img'].front_default,
+        image: data.sprites.other['official-artwork'].front_default,
         types: data.types.map((t: any) => t.type.name),
     };
   }
 }
 
-export default new PokemonService();
+export default new PokemonService()
