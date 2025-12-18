@@ -1,124 +1,130 @@
 import { Request, Response } from 'express'
-import { Dresseur, IDresseur } from '../models/dresseur.model'
+import { Dresseur } from '../models/dresseur.model'
 
 class DresseurController {
+  async getAll(req: Request, res: Response) {
+    const dresseurs = await Dresseur.find()
 
-    async getAll(req: Request, res: Response) {
-        const dresseurs = await Dresseur.find()
+    if (dresseurs.length <= 0) {
+      res.status(404).json({ error: "Aucun dresseur n'a été trouvé" })
+    }
+    res.json({
+      dresseurs,
+    })
+  }
 
-        if (dresseurs.length <= 0){
-            res.status(404).json({ error: 'Aucun dresseur n\'a été trouvé'})
-        }
-        res.json({
-            dresseurs,
-        })
+  async getById(req: Request, res: Response) {
+    const { id } = req.params
+    const dresseur = await Dresseur.findById(id)
+
+    if (!dresseur) {
+      res.status(404).json({ error: 'Dresseur non trouvé' })
+      return
     }
 
-    async getById(req: Request, res: Response) {
-        const { id } = req.params
-        const dresseur = await Dresseur.findById(id)
+    res.json(dresseur)
+  }
 
-        if (!dresseur) {
-            res.status(404).json({ error: 'Dresseur non trouvé' })
-            return
-        }
+  async updatePokedex(req: Request, res: Response) {
+    const { id } = req.params
+    const { pokedex } = req.body
 
-        res.json(dresseur)
+    if (!pokedex || !Array.isArray(pokedex)) {
+      res.status(400).json({ error: 'Le champ pokedex doit être un tableau' })
+      return
     }
 
-    async updatePokedex(req: Request, res: Response) {
-        const { id } = req.params
-        const { pokedex } = req.body
+    // Récupérer le dresseur actuel pour vérifier son pokedex existant
+    const dresseur = await Dresseur.findById(id)
 
-        if (!pokedex || !Array.isArray(pokedex)) {
-            res.status(400).json({ error: 'Le champ pokedex doit être un tableau' })
-            return
-        }
-
-        const dresseur = await Dresseur.findByIdAndUpdate(id, { pokedex }, { new: true })
-
-        if (!dresseur) {
-            res.status(404).json({ error: 'Dresseur non trouvé' })
-            return
-        }
-
-        res.json({
-            message: 'Pokedex mis à jour avec succès',
-            dresseur,
-        })
+    if (!dresseur) {
+      res.status(404).json({ error: 'Dresseur non trouvé' })
+      return
     }
 
-    async addInPokedex(req: Request, res: Response) {
-        const { id } = req.params
-        const { pokemon } = req.body
+    // Mettre à jour le pokedex
+    const dresseurMisAJour = await Dresseur.findByIdAndUpdate(id, { pokedex }, { new: true })
 
-        if (!pokemon || !pokemon.id || !pokemon.name || !pokemon.image || !pokemon.types) {
-            res.status(400).json({ error: 'L\'objet pokemon complet est requis (id, name, image, types)' })
-            return
-        }
+    res.json({
+      message: 'Pokedex mis à jour avec succès',
+      dresseur: dresseurMisAJour,
+    })
+  }
 
-        const dresseur = await Dresseur.findById(id)
+  async addInPokedex(req: Request, res: Response) {
+    const { id } = req.params
+    const pokemon = req.body
+    const dresseur = await Dresseur.findById({ _id: id })
 
-        if (!dresseur) {
-            res.status(404).json({ error: 'Dresseur non trouvé' })
-            return
-        }
-        
-        const exists = dresseur.pokedex.some(p => p.id === pokemon.id)
-        if (exists) {
-            res.status(400).json({ error: 'Ce Pokémon est déjà dans le Pokedex' })
-            return
-        }
-
-        dresseur.pokedex.push(pokemon)
-        await dresseur.save()
-
-        res.json({
-            message: 'Pokémon ajouté au Pokedex avec succès',
-            dresseur,
-        })
+    if (!dresseur) {
+      res.status(404).json({ error: 'Dresseur non trouvé' })
+      return
     }
 
-    async removeFromPokedex(req: Request, res: Response) {
-        const { id } = req.params
-        const { pokemonId } = req.body
+    dresseur.pokedex.push(pokemon)
+    await dresseur.save()
 
-        if (!pokemonId) {
-            res.status(400).json({ error: 'Le pokemonId est requis' })
-            return
-        }
+    res.json({
+      message: 'Pokémon ajouté au Pokedex avec succès',
+      dresseur,
+    })
+  }
 
-        const dresseur = await Dresseur.findByIdAndUpdate(
-            id,
-            { $pull: { pokedex: { id: pokemonId } } },
-            { new: true }
-        )
+  async removeFromPokedex(req: Request, res: Response) {
+    const { id } = req.params
+    const { pokemonId } = req.body
 
-        if (!dresseur) {
-            res.status(404).json({ error: 'Dresseur non trouvé' })
-            return
-        }
-
-        res.json({
-            message: 'Pokémon retiré du Pokedex avec succès',
-            dresseur,
-        })
+    if (!pokemonId) {
+      res.status(400).json({ error: 'Le pokemonId est requis' })
+      return
     }
 
-    async delete(req: Request, res: Response) {
-        const { id } = req.params
-        const dresseur = await Dresseur.findByIdAndDelete(id)
+    const dresseur = await Dresseur.findByIdAndUpdate(
+      id,
+      { $pull: { pokedex: { id: pokemonId } } },
+      { new: true }
+    )
 
-        if (!dresseur) {
-            res.status(404).json({ error: 'Dresseur non trouvé' })
-            return
-        }
-
-        res.json({
-            message: 'Dresseur supprimé avec succès',
-            dresseur,
-        })
+    if (!dresseur) {
+      res.status(404).json({ error: 'Dresseur non trouvé' })
+      return
     }
+
+    res.json({
+      message: 'Pokémon retiré du Pokedex avec succès',
+      dresseur,
+    })
+  }
+
+  async delete(req: Request, res: Response) {
+    const { id } = req.params
+    const dresseur = await Dresseur.findByIdAndDelete(id)
+
+    if (!dresseur) {
+      res.status(404).json({ error: 'Dresseur non trouvé' })
+      return
+    }
+
+    res.json({
+      message: 'Dresseur supprimé avec succès',
+      dresseur,
+    })
+  }
+
+  async getPokedex(req: Request, res: Response) {
+    const { id } = req.params
+    const dresseur = await Dresseur.findById(id)
+
+    if (!dresseur) {
+      res.status(404).json({ error: 'Dresseur non trouvé' })
+      return
+    }
+
+    return res.json({
+      message: 'Pokedex récupéré avec succès',
+      pokedex: dresseur.pokedex,
+    })
+  }
 }
 
 export default new DresseurController()

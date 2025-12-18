@@ -1,5 +1,8 @@
+import { apiClient } from '@/services/api-client'
 import type { IPokemon } from '@/types/pokemon.type'
 import type { FC, JSX } from 'react'
+import { toast } from 'sonner'
+import { Button } from './ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
 import {
   Dialog,
@@ -15,7 +18,10 @@ interface IPokemonCardProps {
 }
 
 export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => {
-  // push to /pokemon/:name au click
+  const ajouter = async () => {
+    await apiClient.post('/api/dresseur/694427839e364a80bab760c4/pokedex/add', pokemon)
+    toast.success('Pokémon ajouté au pokedex')
+  }
 
   return (
     <Dialog>
@@ -23,15 +29,23 @@ export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => 
         <Card className='cursor-pointer hover:bg-accent/50 transition-colors duration-100'>
           <CardHeader>
             <CardTitle>{pokemon.name}</CardTitle>
+            <p>#{pokemon.id}</p>
             <CardDescription>
               <p>{pokemon.types.join(', ')}</p>
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className='mx-auto'>
             <img src={pokemon.image} alt={pokemon.name} width={96} height={96} />
           </CardContent>
-          <CardFooter>
-            <p>#{pokemon.id}</p>
+          <CardFooter className='flex justify-between items-center'>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation()
+                ajouter()
+              }}
+            >
+              Ajouter au pokedex
+            </Button>
           </CardFooter>
         </Card>
       </DialogTrigger>

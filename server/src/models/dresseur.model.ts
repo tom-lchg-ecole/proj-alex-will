@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Document, Schema } from 'mongoose'
 import { IPokemon } from '../types/pokemon.type'
 
 export interface IDresseur extends Document {
@@ -8,7 +8,6 @@ export interface IDresseur extends Document {
   pokedex: IPokemon[]
   createdAt: Date
 }
-
 
 const DresseurSchema: Schema = new Schema(
   {
@@ -23,18 +22,19 @@ const DresseurSchema: Schema = new Schema(
     },
     password: {
       type: String,
-      required: true
+      required: true,
     },
     pokedex: {
-      type: [{
-        id: { type: Number, required: true },
-        name: { type: String, required: true },
-        image: { type: String, required: true },
-        types: { type: [String], required: true }
-      }],
-      default:[]
-    }
-
+      type: [
+        {
+          id: { type: Number, required: true },
+          name: { type: String, required: true },
+          image: { type: String, required: true },
+          types: { type: [String], required: true },
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: true,
