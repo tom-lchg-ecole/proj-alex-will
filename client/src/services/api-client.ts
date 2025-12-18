@@ -6,18 +6,37 @@
 
 class ApiClient {
   private baseUrl = 'http://localhost:3000'
-  private headers = {
-    'Content-Type': 'application/json',
+
+  /**
+   * Récupère les headers avec le token d'authentification si disponible
+   * @returns Headers avec Content-Type et Authorization si token présent
+   */
+  private getAuthHeaders(): HeadersInit {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    }
+
+    // Récupérer le token depuis localStorage
+    const token = localStorage.getItem('token')
+
+    // Ajouter le header Authorization si le token existe
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`
+    }
+
+    return headers
   }
 
   async get(endpoint: string) {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, { headers: this.headers })
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      headers: this.getAuthHeaders(),
+    })
     return response.json()
   }
 
   async post(endpoint: string, data: unknown) {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      headers: this.headers,
+      headers: this.getAuthHeaders(),
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -26,7 +45,7 @@ class ApiClient {
 
   async patch(endpoint: string, data: unknown) {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      headers: this.headers,
+      headers: this.getAuthHeaders(),
       method: 'PATCH',
       body: JSON.stringify(data),
     })
@@ -35,7 +54,7 @@ class ApiClient {
 
   async delete(endpoint: string) {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      headers: this.headers,
+      headers: this.getAuthHeaders(),
       method: 'DELETE',
     })
     return response.json()

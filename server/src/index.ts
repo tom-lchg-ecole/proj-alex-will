@@ -6,12 +6,12 @@ import { pokemonRoutes } from './routes/pokemon.routes'
 import { connectDB } from './utils/mongodb'
 import { equipeRoutes } from './routes/equipe.routes'
 import { dresseurRoutes } from './routes/dresseur.routes'
-app.use('/auth', authRoute)
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Serveur Express avec TypeScript fonctionne !' })
 })
 
+app.use('/auth', authRoute)
 app.use('/api', pokemonRoutes)
 app.use('/api/equipe', equipeRoutes)
 app.use('/api/dresseur', dresseurRoutes)
