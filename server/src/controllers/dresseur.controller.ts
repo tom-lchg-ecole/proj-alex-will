@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Dresseur } from '../models/dresseur.model'
-
+import { deleteEquipeSchema } from '../dtos/dresseur.dtos'
 class DresseurController {
   async getAll(req: Request, res: Response) {
     const dresseurs = await Dresseur.find()
@@ -93,6 +93,13 @@ class DresseurController {
 
   async delete(req: Request, res: Response) {
     const { id } = req.params
+
+    const { error } = deleteEquipeSchema.validate({ id })
+    if (error) {
+      res.status(400).json({ error: error.message })
+      return
+    }
+    
     const dresseur = await Dresseur.findByIdAndDelete(id)
 
     if (!dresseur) {
