@@ -1,7 +1,9 @@
+import { UpdateEquipe } from '@/features/update-equipe/update-equipe'
 import { apiClient } from '@/services/api-client'
 import type { IEquipe } from '@/types/equipe.type'
 import { Pencil, Settings2, Trash2 } from 'lucide-react'
 import type { FC, JSX } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { PokemonCard } from './pokemon-card'
 import { Button } from './ui/button'
@@ -10,8 +12,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 
@@ -20,6 +20,8 @@ interface IEquipeCardProps {
 }
 
 export const EquipeCard: FC<IEquipeCardProps> = ({ equipe }): JSX.Element => {
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false)
+
   const handleDelete = async () => {
     await apiClient.delete(`/api/equipe/${equipe._id}`)
     toast.success('Équipe supprimée avec succès')
@@ -37,10 +39,8 @@ export const EquipeCard: FC<IEquipeCardProps> = ({ equipe }): JSX.Element => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Pencil /> <span>Renommer</span>
+              <DropdownMenuItem onClick={() => setUpdateDialogOpen(true)}>
+                <Pencil /> <span>Modifier</span>
               </DropdownMenuItem>
               <DropdownMenuItem variant='destructive' onClick={handleDelete}>
                 <Trash2 /> <span>Supprimer</span>
@@ -57,6 +57,7 @@ export const EquipeCard: FC<IEquipeCardProps> = ({ equipe }): JSX.Element => {
           ))}
         </div>
       </CardContent>
+      <UpdateEquipe equipe={equipe} open={updateDialogOpen} onOpenChange={setUpdateDialogOpen} />
     </Card>
   )
 }
