@@ -76,6 +76,10 @@ export const CreateEquipe: FC = (): JSX.Element => {
 
     await apiClient.post(`/api/equipe`, { ...equipeData, dresseurId: user?._id })
     toast.success('Équipe créée avec succès')
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 200)
   }
 
   return (

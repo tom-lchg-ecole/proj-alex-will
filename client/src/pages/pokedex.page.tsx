@@ -30,9 +30,11 @@ export const PokedexPage: FC = (): JSX.Element => {
         <Input placeholder='Rechercher un Pokémon' className='rounded-full py-6' />
       </article>
 
-      <article className='text-center text-muted-foreground'>
-        <p>Affichage de 1595 sur 1595 Pokémon</p>
-      </article>
+      {pokedex.length === 0 && (
+        <div className='text-center text-muted-foreground text-lg my-8'>
+          Aucun Pokémon dans le Pokédex
+        </div>
+      )}
 
       <article className='flex flex-wrap gap-4'>
         {pokedex.map((pokemon) => (

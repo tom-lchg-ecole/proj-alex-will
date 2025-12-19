@@ -29,6 +29,7 @@ export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => 
   const supprimer = async () => {
     await apiClient.delete(`/api/dresseur/${user?._id}/pokedex/remove/${pokemon.id}`)
     toast.success('Pokémon supprimé du pokedex')
+    document.location.reload()
   }
 
   return (
