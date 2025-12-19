@@ -79,7 +79,7 @@ export const CreateEquipe: FC = (): JSX.Element => {
 
     setTimeout(() => {
       window.location.reload()
-    }, 200)
+    }, 1000)
   }
 
   return (

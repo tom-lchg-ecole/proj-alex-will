@@ -101,6 +101,10 @@ export const UpdateEquipe: FC<IUpdateEquipeProps> = ({
       await apiClient.patch(`/api/equipe/${equipe._id}`, equipeData)
       toast.success('Équipe mise à jour avec succès')
       setOpen(false)
+
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
     } catch (error) {
       toast.error("Erreur lors de la mise à jour de l'équipe")
       console.error('Erreur lors de la mise à jour:', error)

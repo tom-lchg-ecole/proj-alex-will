@@ -27,7 +27,7 @@ export const EquipeCard: FC<IEquipeCardProps> = ({ equipe }): JSX.Element => {
 
     setTimeout(() => {
       document.location.reload()
-    }, 200)
+    }, 1000)
   }
 
   return (
