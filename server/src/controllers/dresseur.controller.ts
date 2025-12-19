@@ -3,7 +3,7 @@ import { deleteEquipeSchema } from '../dtos/dresseur.dtos'
 import { Dresseur } from '../models/dresseur.model'
 class DresseurController {
   async getAll(req: Request, res: Response) {
-    const dresseurs = await Dresseur.find().select('-password')
+    const dresseurs = await Dresseur.find().select('-password').select('-email')
 
     if (dresseurs.length <= 0) {
       res.status(404).json({ error: "Aucun dresseur n'a été trouvé" })
@@ -15,7 +15,7 @@ class DresseurController {
 
   async getById(req: Request, res: Response) {
     const { id } = req.params
-    const dresseur = await Dresseur.findById(id).select('-password')
+    const dresseur = await Dresseur.findById(id).select('-password').select('-email')
 
     if (!dresseur) {
       res.status(404).json({ error: 'Dresseur non trouvé' })
