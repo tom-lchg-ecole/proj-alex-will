@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { createEquipeSchema, updateEquipeSchema } from '../dtos/equipe.dtos'
+import { createEquipeSchema, deleteEquipeSchema, updateEquipeSchema } from '../dtos/equipe.dtos'
 import { Equipe } from '../models/equipe.model'
 
 class EquipeController {
@@ -83,6 +83,14 @@ class EquipeController {
 
   async delete(req: Request, res: Response) {
     const { id } = req.params
+
+    // Validation avec le schéma Joi
+    const { error } = deleteEquipeSchema.validate({ id })
+    if (error) {
+      res.status(400).json({ error: error.message })
+      return
+    }
+
     const equipe = await Equipe.findByIdAndDelete(id)
 
     if (!equipe) {

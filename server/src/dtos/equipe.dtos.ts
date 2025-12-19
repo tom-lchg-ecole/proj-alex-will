@@ -18,3 +18,7 @@ export const updateEquipeSchema = Joi.object({
   name: Joi.string().min(1).required(),
   pokemons: Joi.array().items(pokemonSchema).min(1).max(6).required(),
 })
+
+export const deleteEquipeSchema = Joi.object({
+  id: Joi.string().hex().required(), 
+})
