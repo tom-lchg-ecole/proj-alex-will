@@ -20,9 +20,19 @@ class AuthController {
         ...data, // spread operator pour copier les propriétés de l'objet data et ajouté le password
         password: hashedPassword,
       })
-      return newDresseur
+      return {
+        message: 'Dresseur créé avec succès',
+        data: newDresseur,
+        code: 200,
+        success: true,
+      }
     } catch (error: any) {
-      throw new Error(error.message)
+      return {
+        message: error.message,
+        data: null,
+        code: 500,
+        success: false,
+      }
     }
   }
 
@@ -40,26 +50,33 @@ class AuthController {
         throw new Error('Le mot de passe est incorrect')
       }
 
-      // Vérifier que JWT_SECRET est défini
-      if (!process.env.JWT_SECRET) {
-        throw new Error("JWT_SECRET n'est pas défini dans les variables d'environnement")
-      }
-
       // Créer un token JWT
+      const token = jwt.sign({ id: dresseur._id }, process.env.JWT_SECRET!, {
+        expiresIn: '1h',
+      })
       return {
-        token: jwt.sign({ id: dresseur._id }, process.env.JWT_SECRET, {
-          expiresIn: '1h',
-        }),
-        dresseur: dresseur,
+        message: 'Dresseur connecté avec succès',
+        data: { token, dresseur },
+        code: 200,
+        success: true,
       }
     } catch (error: any) {
-      throw new Error(error.message)
+      return {
+        message: error.message,
+        data: null,
+        code: 500,
+        success: false,
+      }
     }
   }
 
   // Récupère le dresseur connecté par son ID (sans le mot de passe)
-  async getCurrentUser(userId: string) {
+  async getCurrentUser(userId: string | undefined) {
     try {
+      if (!userId) {
+        throw new Error('Utilisateur non authentifié')
+      }
+
       // Récupérer le dresseur par ID en excluant le champ password
       const dresseur = await Dresseur.findById(userId).select('-password')
 
@@ -67,9 +84,19 @@ class AuthController {
         throw new Error('Dresseur non trouvé')
       }
 
-      return dresseur
+      return {
+        message: 'Dresseur récupéré avec succès',
+        data: dresseur,
+        code: 200,
+        success: true,
+      }
     } catch (error: any) {
-      throw new Error(error.message)
+      return {
+        message: error.message,
+        data: null,
+        code: 500,
+        success: false,
+      }
     }
   }
 }
