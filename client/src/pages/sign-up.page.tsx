@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { type FC, type JSX } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 // Schéma de validation pour le formulaire d'inscription
@@ -50,7 +51,11 @@ export const SignUpPage: FC = (): JSX.Element => {
       // Appel à l'API pour l'inscription
       await apiClient.post('/api/auth/sign-up', values)
       // TODO: Rediriger vers la page de connexion ou le profil
-      navigate('/sign-in')
+      toast.success('Inscription réussie ! Vous pouvez maintenant vous connecter.')
+
+      setTimeout(() => {
+        navigate('/sign-in')
+      }, 600)
     } catch (error) {
       console.error("Erreur lors de l'inscription:", error)
       // TODO: Afficher un message d'erreur à l'utilisateur
