@@ -25,12 +25,12 @@ export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => 
   // Pour afficher le bouton supprimer uniquement dans le pokedex
   const { pathname } = useLocation()
 
-  const ajouter = async () => {
+  const addPokemonToPokedex = async () => {
     await apiClient.post(`/api/dresseur/${user?._id}/pokedex/add`, pokemon)
     toast.success('Pokémon ajouté au pokedex')
   }
 
-  const supprimer = async () => {
+  const removePokemonFromPokedex = async () => {
     await apiClient.delete(`/api/dresseur/${user?._id}/pokedex/remove/${pokemon.id}`)
     toast.success('Pokémon supprimé du pokedex')
     document.location.reload()
@@ -55,7 +55,7 @@ export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => 
               <Button
                 onClick={(e) => {
                   e.stopPropagation()
-                  ajouter()
+                  addPokemonToPokedex()
                 }}
               >
                 Ajouter au pokedex
@@ -66,7 +66,7 @@ export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => 
               <Button
                 onClick={(e) => {
                   e.stopPropagation()
-                  supprimer()
+                  removePokemonFromPokedex()
                 }}
                 variant='destructive'
               >
