@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { deleteEquipeSchema } from '../dtos/dresseur.dtos'
+import { deleteDresseurSchema, updatePokedexSchema } from '../dtos/dresseur.dtos'
 import { Dresseur } from '../models/dresseur.model'
 class DresseurController {
   async getAll(req: Request, res: Response) {
@@ -29,8 +29,9 @@ class DresseurController {
     const { id } = req.params
     const { pokedex } = req.body
 
-    if (!pokedex || !Array.isArray(pokedex)) {
-      res.status(400).json({ error: 'Le champ pokedex doit être un tableau' })
+    const { error } = updatePokedexSchema.validate({ id, pokedex })
+    if (error) {
+      res.status(400).json({ error: error.message })
       return
     }
 
@@ -94,7 +95,7 @@ class DresseurController {
   async delete(req: Request, res: Response) {
     const { id } = req.params
 
-    const { error } = deleteEquipeSchema.validate({ id })
+    const { error } = deleteDresseurSchema.validate({ id })
     if (error) {
       res.status(400).json({ error: error.message })
       return
