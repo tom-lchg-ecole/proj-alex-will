@@ -2,6 +2,7 @@ import { useGetCurrentUser } from '@/hooks/use-get-current-user'
 import { apiClient } from '@/services/api-client'
 import type { IPokemon } from '@/types/pokemon.type'
 import type { FC, JSX } from 'react'
+import { useLocation } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Button } from './ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
@@ -20,6 +21,9 @@ interface IPokemonCardProps {
 
 export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => {
   const { user } = useGetCurrentUser()
+
+  // Pour afficher le bouton supprimer uniquement dans le pokedex
+  const { pathname } = useLocation()
 
   const ajouter = async () => {
     await apiClient.post(`/api/dresseur/${user?._id}/pokedex/add`, pokemon)
@@ -47,23 +51,28 @@ export const PokemonCard: FC<IPokemonCardProps> = ({ pokemon }): JSX.Element => 
             <img src={pokemon.image} alt={pokemon.name} width={96} height={96} />
           </CardContent>
           <CardFooter className='flex flex-col gap-1'>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation()
-                ajouter()
-              }}
-            >
-              Ajouter au pokedex
-            </Button>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation()
-                supprimer()
-              }}
-              variant='destructive'
-            >
-              Supprimer du pokedex
-            </Button>
+            {pathname !== '/pokedex' && (
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  ajouter()
+                }}
+              >
+                Ajouter au pokedex
+              </Button>
+            )}
+
+            {pathname === '/pokedex' && (
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  supprimer()
+                }}
+                variant='destructive'
+              >
+                Supprimer du pokedex
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </DialogTrigger>
