@@ -1,23 +1,20 @@
 import { Request, Response } from 'express'
-import { Equipe, IEquipe } from '../models/equipe.model'
-
+import { createEquipeSchema, updateEquipeSchema } from '../dtos/equipe.dtos'
+import { Equipe } from '../models/equipe.model'
 
 class EquipeController {
   async create(req: Request, res: Response) {
     const { name, pokemons, dresseurId } = req.body
 
-    if (!name || !dresseurId) {
-      res.status(400).json({ error: 'Le nom et le dresseurId sont requis' })
+    // Validation avec le schéma Joi
+    const { error } = createEquipeSchema.validate({ name, pokemons })
+    if (error) {
+      res.status(400).json({ error: error.message })
       return
     }
 
-    if (!pokemons || pokemons.length === 0) {
-      res.status(400).json({ error: 'Une équipe doit contenir au moins un Pokémon' })
-      return
-    }
-
-    if (pokemons.length > 6) {
-      res.status(400).json({ error: 'Une équipe ne peut pas contenir plus de 6 Pokémon' })
+    if (!dresseurId) {
+      res.status(400).json({ error: 'Le dresseurId est requis' })
       return
     }
 
@@ -31,8 +28,8 @@ class EquipeController {
 
   async getAll(req: Request, res: Response) {
     const equipes = await Equipe.find()
-    if(equipes.length <= 0){
-      res.status(404).json({ error: 'Aucune équipe n\'a était trouvée'})
+    if (equipes.length <= 0) {
+      res.status(404).json({ error: "Aucune équipe n'a était trouvée" })
     }
     res.json({
       equipes,
@@ -64,8 +61,10 @@ class EquipeController {
     const { id } = req.params
     const data = req.body
 
-    if (data.pokemons && data.pokemons.length > 6) {
-      res.status(400).json({ error: 'Une équipe ne peut pas contenir plus de 6 Pokémon' })
+    // Validation avec le schéma Joi
+    const { error } = updateEquipeSchema.validate(data)
+    if (error) {
+      res.status(400).json({ error: error.message })
       return
     }
 
